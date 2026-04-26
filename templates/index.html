@@ -1,27 +1,99 @@
 <!DOCTYPE html>
 <html lang="zh">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/7.7.3/wavesurfer.min.js"></script>
 <head>
   <meta charset="UTF-8">
   <title>播客剪辑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>播客剪辑</h1>
+  <div class="layout">
 
-    <div class="upload-area">
-      <input type="file" id="fileInput" accept="audio/*">
-      <button onclick="uploadFile()">上传并转录</button>
-    </div>
+    <div class="sidebar">
+      <div class="logo">CutWord</div>
 
-    <div id="status"></div>
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">⊕</div>
+        <div class="upload-label">拖入音频文件</div>
+        <div class="upload-sub">或点击选择</div>
+        <input type="file" id="fileInput" accept="audio/*" hidden>
+      </div>
 
-    <div class="editor">
-      <div id="segmentList"></div>
-      <div class="actions" id="actions" style="display:none">
-        <button onclick="exportAudio()">导出剪辑后音频</button>
+      <div class="stats" id="stats" style="display:none">
+        <div class="stat-row">
+          <span class="stat-k">总时长</span>
+          <span class="stat-v" id="statTotal">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-k">已删除</span>
+          <span class="stat-v red" id="statDeleted">0 段</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-k">剩余时长</span>
+          <span class="stat-v green" id="statRemain">—</span>
+        </div>
+      </div>
+
+      <div class="search-wrap" id="searchWrap" style="display:none">
+        <input class="search-input" id="searchInput" placeholder="搜索关键词..." oninput="filterSegments(this.value)">
+      </div>
+
+      <div class="side-actions" id="sideActions" style="display:none">
+        <button class="btn-ghost" onclick="undoDelete()">↩ 撤销</button>
+        <button class="btn-ghost" onclick="selectAll()">全选</button>
+        <button class="btn-ghost danger" onclick="deleteSelected()">删除所选</button>
+        <button class="btn-primary" onclick="exportAudio()">导出音频 ↓</button>
+      </div>
+
+      <div class="shortcuts">
+        <div class="shortcut-title">快捷键</div>
+        <div class="shortcut-row"><kbd>空格</kbd> 播放 / 暂停</div>
+        <div class="shortcut-row"><kbd>⌘Z</kbd> 撤销</div>
+        <div class="shortcut-row"><kbd>点击</kbd> 删除 / 恢复</div>
+        <div class="shortcut-row"><kbd>⇧点击</kbd> 多选</div>
       </div>
     </div>
+
+    <div class="main">
+  <div class="player-bar" id="playerBar" style="display:none">
+    <button class="play-btn" id="playBtn" onclick="togglePlay()">
+      <span class="play-icon" id="playIcon">▶</span>
+    </button>
+    <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+    <audio id="audioPlayer" preload="auto"></audio>
+  </div>
+
+  <div class="editor-columns">
+    <div class="col-left">
+      <div class="status-bar" id="statusBar">
+        <span id="statusText">上传音频文件开始剪辑</span>
+      </div>
+      <div class="segment-list" id="segmentList"></div>
+    </div>
+
+    <div class="col-right">
+      <div class="waveform-header">
+        <span class="col-title">波形</span>
+        <button class="btn-ghost small" onclick="autoRemoveFiller()">⚡ 自动删除口头禅</button>
+      </div>
+      <div id="waveform"></div>
+      <div class="filler-words">
+        <span class="col-title">口头禅设置</span>
+        <input class="search-input" id="fillerInput" value="嗯,啊,那个,就是,然后,对对对,呃">
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="status-bar" id="statusBar">
+        <span id="statusText">上传音频文件开始剪辑</span>
+      </div>
+
+      <div class="segment-list" id="segmentList"></div>
+    </div>
+
   </div>
   <script src="/static/app.js"></script>
 </body>

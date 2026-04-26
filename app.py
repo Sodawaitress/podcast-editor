@@ -1,7 +1,7 @@
 import os
 import json
 from pathlib import Path
-from flask import Flask, request, jsonify, render_template, send_file
+from flask import Flask, request, jsonify, render_template, send_file, send_from_directory
 from transcribe import transcribe
 from editor import cut_audio
 
@@ -12,6 +12,10 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_DIR, filename)
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -32,4 +36,4 @@ def export():
     return send_file(str(out_path), as_attachment=True)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

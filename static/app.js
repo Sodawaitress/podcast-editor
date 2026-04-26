@@ -54,6 +54,18 @@ async function uploadFile(file) {
     // 设置播放器
     audio = document.getElementById("audioPlayer");
     audio.src = `/uploads/${filename}`;
+    // 初始化 wavesurfer
+    if (window.wavesurfer) window.wavesurfer.destroy();
+    window.wavesurfer = WaveSurfer.create({
+      container: "#waveform",
+      waveColor: "#2a4a2a",
+      progressColor: "#a8e890",
+      cursorColor: "#a8e890",
+      height: 80,
+      normalize: true,
+      backend: "MediaElement",
+      media: audio,
+    });
     audio.ontimeupdate = onTimeUpdate;
 
     document.getElementById("playerBar").style.display = "flex";
@@ -237,3 +249,29 @@ document.addEventListener("keydown", (e) => {
   if (e.code === "Space") { e.preventDefault(); togglePlay(); }
   if ((e.metaKey || e.ctrlKey) && e.key === "z") { e.preventDefault(); undoDelete(); }
 });
+
+function autoRemoveFiller() {
+  const input = document.getElementById("fillerInput").value;
+  const fillers = input.split(",").map(s => s.trim()).filter(Boolean);
+  if (!fillers.length) return;
+
+  saveHistory();
+  let count = 0;
+
+  segments.forEach(seg => {
+    const text = seg.text.trim();
+    const isFiller = fillers.some(f => {
+      // 整段都是口头禅，或者非常短且包含口头禅
+      return text === f ||
+             (text.length <= 6 && fillers.some(f => text.includes(f)));
+    });
+    if (isFiller) {
+      seg.deleted = true;
+      count++;
+    }
+  });
+
+  updateStats();
+  renderSegments();
+  setStatus(`自动删除了 ${count} 段口头禅`);
+}
