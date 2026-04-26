@@ -1,0 +1,81 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, sans-serif;
+  background: #0f0f11;
+  color: #e0ddd6;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.container { max-width: 760px; margin: 0 auto; }
+
+h1 {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 28px;
+  color: #c2f0a0;
+}
+
+.upload-area {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+input[type="file"] {
+  flex: 1;
+  background: #1a1a1e;
+  border: 0.5px solid #2a2a2e;
+  color: #aaa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+button {
+  background: #1e3a1a;
+  border: 0.5px solid #2e5e28;
+  color: #c2f0a0;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover { background: #254a20; }
+
+#status {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.segment {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 14px;
+  border-bottom: 0.5px solid #1a1a1e;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.segment:hover { background: #161618; }
+
+.segment.deleted {
+  opacity: 0.3;
+  text-decoration: line-through;
+}
+
+.seg-time {
+  font-family: monospace;
+  font-size: 11px;
+  color: #555;
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.seg-text { font-size: 14px; line-height: 1.6; }
+
+.actions { margin-top: 24px; }
